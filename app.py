@@ -72,6 +72,10 @@ if 'game_history' not in st.session_state:
     st.session_state.game_history = []
 if 'show_summary' not in st.session_state:
     st.session_state.show_summary = False
+if 'map_center' not in st.session_state:
+    st.session_state.map_center = [35.6812, 139.7671]  # デフォルトの地図中心
+if 'map_zoom' not in st.session_state:
+    st.session_state.map_zoom = 12  # デフォルトのズームレベル
 
 @st.cache_data
 def load_stations():
@@ -173,8 +177,16 @@ def calculate_game_summary(game_results):
     
     return summary
 
-def create_map(center_lat=35.6812, center_lon=139.7671, zoom=12, show_result=False, correct_station=None, guessed_location=None, current_click=None, stations=None, past_results=None):
+def create_map(center_lat=None, center_lon=None, zoom=None, show_result=False, correct_station=None, guessed_location=None, current_click=None, stations=None, past_results=None):
     """地図を作成（関東地方XYZタイル版）"""
+    # デフォルト値を使用
+    if center_lat is None:
+        center_lat = st.session_state.map_center[0]
+    if center_lon is None:
+        center_lon = st.session_state.map_center[1]
+    if zoom is None:
+        zoom = st.session_state.map_zoom
+    
     # タイルサーバーを起動
     if not start_tile_server():
         st.error("タイルサーバーの起動に失敗しました")
@@ -536,7 +548,13 @@ def main():
                     )
                 
                 # 地図を表示してクリック位置を取得（シンプル版）
-                map_data = st_folium(m, width=600, height=400, key=f"map_{st.session_state.round}")
+                map_data = st_folium(m, width=600, height=400, key="main_map")
+                
+                # 地図の位置を更新
+                if map_data and 'center' in map_data:
+                    st.session_state.map_center = [map_data['center']['lat'], map_data['center']['lng']]
+                if map_data and 'zoom' in map_data:
+                    st.session_state.map_zoom = map_data['zoom']
                 
                 # クリック位置を取得（答え合わせモードでない場合のみ）
                 if not st.session_state.show_result and map_data and 'last_clicked' in map_data and map_data['last_clicked']:
