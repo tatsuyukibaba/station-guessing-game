@@ -12,9 +12,6 @@ from streamlit_folium import st_folium
 import pandas as pd
 import geopandas as gpd
 from pathlib import Path
-import subprocess
-import time
-import requests
 
 # ページ設定
 st.set_page_config(
@@ -24,26 +21,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-def start_tile_server():
-    """タイルサーバーを起動"""
-    try:
-        # サーバーが既に起動しているかチェック
-        response = requests.get('http://localhost:8000/kanto/6/57/25.png', timeout=1)
-        if response.status_code == 200:
-            return True
-    except:
-        pass
-    
-    # サーバーを起動
-    try:
-        subprocess.Popen(['python', '-m', 'http.server', '8000'], 
-                        cwd='tiles', 
-                        stdout=subprocess.DEVNULL, 
-                        stderr=subprocess.DEVNULL)
-        time.sleep(2)  # サーバー起動を待つ
-        return True
-    except:
-        return False
 
 # セッション状態の初期化
 if 'stations' not in st.session_state:
@@ -187,10 +164,6 @@ def create_map(center_lat=None, center_lon=None, zoom=None, show_result=False, c
     if zoom is None:
         zoom = st.session_state.map_zoom
     
-    # タイルサーバーを起動
-    if not start_tile_server():
-        st.error("タイルサーバーの起動に失敗しました")
-        return folium.Map(location=[center_lat, center_lon], zoom_start=zoom)
     
     # 関東地方のXYZタイルを使用
     m = folium.Map(
@@ -207,11 +180,9 @@ def create_map(center_lat=None, center_lon=None, zoom=None, show_result=False, c
         dragging=True  # ドラッグを有効化
     )
     
-    # 生成した関東地方のタイルを追加（HTTPサーバー経由）
-    tile_url = 'http://localhost:8000/kanto/{z}/{x}/{y}.png'
-    
+    # GitHub Pagesのタイルレイヤーを追加
     folium.TileLayer(
-        tiles=tile_url,
+        tiles='https://tatsuyukibaba.github.io/station-guessing-game/tiles/kanto/{z}/{x}/{y}.png',
         name='関東地方地図',
         overlay=False,
         control=False,
