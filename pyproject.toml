@@ -1,0 +1,18 @@
+[project]
+name = "stationapp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "folium>=0.20.0",
+    "geopandas>=1.1.1",
+    "pandas>=2.3.2",
+    "shapely>=2.1.1",
+    "streamlit>=1.49.1",
+    "streamlit-folium>=0.25.1",
+    "pyproj>=3.6.0",
+    "pillow>=11.3.0",
+    "mercantile>=1.2.1",
+    "matplotlib>=3.10.6",
+]

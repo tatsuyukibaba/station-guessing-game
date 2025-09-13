@@ -1,0 +1,8 @@
+streamlit>=1.28.0
+folium>=0.14.0
+streamlit-folium>=0.13.0
+pandas>=2.0.0
+geopandas>=0.13.0
+pillow>=10.0.0
+mercantile>=1.2.0
+requests>=2.31.0

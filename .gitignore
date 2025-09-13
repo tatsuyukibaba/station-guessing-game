@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Data files (except S12)
+data/N02-24_RailroadSection.geojson
+data/N03-20250101_prefecture.geojson
+data/N02-24_Station.geojson
+
+# Generated tiles (exclude zoom level 14)
+tiles/kanto/14/
+tiles/kanto/13/
+tiles/kanto/12/
